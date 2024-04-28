@@ -1,0 +1,41 @@
+﻿@page "/"
+@using MauiAppLocalization.Data
+@using Microsoft.Extensions.Localization
+@using System.Globalization
+@using System.Resources
+@inject IStringLocalizer<Index> Localizer
+
+<div style="text-align: right; margin-bottom: 10px;">
+    <select @onchange="ChangeLanguage">
+        <option value="en-GB">English (UK)</option>
+        <option value="ur">Urdu</option>
+    </select>
+</div>
+
+<h1>@Localizer["HelloWorld"]</h1>
+
+<p>@Localizer["WelcomeMessage"]</p>
+
+<SurveyPrompt Title="@Localizer["SurveyPromptTitle"]" />
+
+@code {
+    private string selectedCulture = "en-GB";
+
+    protected override void OnInitialized()
+    {
+        LoadResources();
+    }
+
+    private void LoadResources()
+    {
+        var culture = CultureInfo.GetCultureInfo(selectedCulture);
+        var resourceManager = new ResourceManager("MauiAppLocalization.LanguageResources.Resource", typeof(Index).Assembly);
+        Localizer = new CustomStringLocalizer<Index>(resourceManager, culture);
+    }
+
+    private void ChangeLanguage(ChangeEventArgs e)
+    {
+        selectedCulture = e.Value.ToString();
+        LoadResources();
+    }
+}
